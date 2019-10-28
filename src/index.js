@@ -10,7 +10,10 @@ class PickerColumn extends Component {
     itemHeight: PropTypes.number.isRequired,
     columnHeight: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
-    tabIndex: PropTypes.number.isRequired
+    tabIndex: PropTypes.number.isRequired,
+    textColor: PropTypes.string,
+    textFontFamily: PropTypes.string,
+    textSize: PropTypes.number
   };
 
   constructor(props) {
@@ -30,27 +33,35 @@ class PickerColumn extends Component {
     this.setState(this.computeTranslate(nextProps));
   }
 
-  computeTranslate = (props) => {
+  computeTranslate = props => {
     const { options, value, itemHeight, columnHeight } = props;
     let selectedIndex = options.indexOf(value);
     if (selectedIndex < 0) {
       // throw new ReferenceError();
-      console.warn('Warning: "' + this.props.name + '" doesn\'t contain an option of "' + value + '".');
+      console.warn(
+        'Warning: "' +
+          this.props.name +
+          '" doesn\'t contain an option of "' +
+          value +
+          '".'
+      );
       this.onValueSelected(options[0]);
       selectedIndex = 0;
     }
     return {
-      scrollerTranslate: columnHeight / 2 - itemHeight / 2 - selectedIndex * itemHeight,
-      minTranslate: columnHeight / 2 - itemHeight * options.length + itemHeight / 2,
+      scrollerTranslate:
+        columnHeight / 2 - itemHeight / 2 - selectedIndex * itemHeight,
+      minTranslate:
+        columnHeight / 2 - itemHeight * options.length + itemHeight / 2,
       maxTranslate: columnHeight / 2 - itemHeight / 2
     };
   };
 
-  onValueSelected = (newValue) => {
+  onValueSelected = newValue => {
     this.props.onChange(this.props.name, newValue);
   };
 
-  handleTouchStart = (event) => {
+  handleTouchStart = event => {
     const startTouchY = event.targetTouches[0].pageY;
     this.setState(({ scrollerTranslate }) => ({
       startTouchY,
@@ -58,29 +69,40 @@ class PickerColumn extends Component {
     }));
   };
 
-  handleTouchMove = (event) => {
+  handleTouchMove = event => {
     event.preventDefault();
     const touchY = event.targetTouches[0].pageY;
-    this.setState(({ isMoving, startTouchY, startScrollerTranslate, minTranslate, maxTranslate }) => {
-      if (!isMoving) {
-        return {
-          isMoving: true
+    this.setState(
+      ({
+        isMoving,
+        startTouchY,
+        startScrollerTranslate,
+        minTranslate,
+        maxTranslate
+      }) => {
+        if (!isMoving) {
+          return {
+            isMoving: true
+          };
         }
-      }
 
-      let nextScrollerTranslate = startScrollerTranslate + touchY - startTouchY;
-      if (nextScrollerTranslate < minTranslate) {
-        nextScrollerTranslate = minTranslate - Math.pow(minTranslate - nextScrollerTranslate, 0.8);
-      } else if (nextScrollerTranslate > maxTranslate) {
-        nextScrollerTranslate = maxTranslate + Math.pow(nextScrollerTranslate - maxTranslate, 0.8);
+        let nextScrollerTranslate =
+          startScrollerTranslate + touchY - startTouchY;
+        if (nextScrollerTranslate < minTranslate) {
+          nextScrollerTranslate =
+            minTranslate - Math.pow(minTranslate - nextScrollerTranslate, 0.8);
+        } else if (nextScrollerTranslate > maxTranslate) {
+          nextScrollerTranslate =
+            maxTranslate + Math.pow(nextScrollerTranslate - maxTranslate, 0.8);
+        }
+        return {
+          scrollerTranslate: nextScrollerTranslate
+        };
       }
-      return {
-        scrollerTranslate: nextScrollerTranslate
-      };
-    });
+    );
   };
 
-  handleTouchEnd = (event) => {
+  handleTouchEnd = event => {
     if (!this.state.isMoving) {
       return;
     }
@@ -94,11 +116,11 @@ class PickerColumn extends Component {
     }, 0);
   };
 
-  handleTouchCancel = (event) => {
+  handleTouchCancel = event => {
     if (!this.state.isMoving) {
       return;
     }
-    this.setState((startScrollerTranslate) => ({
+    this.setState(startScrollerTranslate => ({
       isMoving: false,
       startTouchY: 0,
       startScrollerTranslate: 0,
@@ -106,7 +128,7 @@ class PickerColumn extends Component {
     }));
   };
 
-  handleItemClick = (option) => {
+  handleItemClick = option => {
     if (option !== this.props.value) {
       this.onValueSelected(option);
     }
@@ -121,7 +143,9 @@ class PickerColumn extends Component {
     } else if (scrollerTranslate < minTranslate) {
       activeIndex = options.length - 1;
     } else {
-      activeIndex = - Math.floor((scrollerTranslate - maxTranslate) / itemHeight);
+      activeIndex = -Math.floor(
+        (scrollerTranslate - maxTranslate) / itemHeight
+      );
     }
     this.onValueSelected(options[activeIndex]);
   }
@@ -129,7 +153,7 @@ class PickerColumn extends Component {
   postWheel() {
     const that = this;
     setTimeout(() => {
-      if (that.state.isScrolling > (Date.now() - 250)) {
+      if (that.state.isScrolling > Date.now() - 250) {
         this.postWheel();
         return;
       }
@@ -137,8 +161,7 @@ class PickerColumn extends Component {
     }, 250);
   }
 
-  handleScroll = (event) => {
-
+  handleScroll = event => {
     // Support for keyboard up/down
     let deltaY;
     if (!!event.keyCode && (event.keyCode == 38 || event.keyCode == 40)) {
@@ -151,7 +174,10 @@ class PickerColumn extends Component {
 
     this.setState(({ scrollerTranslate, minTranslate, maxTranslate }) => {
       const newValue = (scrollerTranslate || 0) + Math.round(deltaY);
-      const newTranslate = Math.max(minTranslate, Math.min(maxTranslate, (scrollerTranslate || 0) + Math.round(deltaY)));
+      const newTranslate = Math.max(
+        minTranslate,
+        Math.min(maxTranslate, (scrollerTranslate || 0) + Math.round(deltaY))
+      );
 
       this.postWheel();
 
@@ -163,19 +189,34 @@ class PickerColumn extends Component {
   };
 
   renderItems() {
-    const { options, itemHeight, value } = this.props;
+    const {
+      options,
+      itemHeight,
+      value,
+      textColor,
+      textFontFamily,
+      textSize
+    } = this.props;
     return options.map((option, index) => {
       const style = {
         height: itemHeight + 'px',
-        lineHeight: itemHeight + 'px'
+        lineHeight: itemHeight + 'px',
+        color: textColor,
+        fontFamily: textFontFamily,
+        fontSize: textSize + 'px'
       };
-      const className = `picker-item${option === value ? ' picker-item-selected' : ''}`;
+      const className = `picker-item${
+        option === value ? ' picker-item-selected' : ''
+      }`;
       return (
         <div
           key={index}
           className={className}
           style={style}
-          onClick={() => this.handleItemClick(option)}>{option}</div>
+          onClick={() => this.handleItemClick(option)}
+        >
+          {option}
+        </div>
       );
     });
   }
@@ -209,7 +250,7 @@ class PickerColumn extends Component {
           {this.renderItems()}
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -219,7 +260,10 @@ export default class Picker extends Component {
     valueGroups: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     itemHeight: PropTypes.number,
-    height: PropTypes.number
+    height: PropTypes.number,
+    textColor: PropTypes.string,
+    textFontFamily: PropTypes.string,
+    textSize: PropTypes.number
   };
 
   static defaultProps = {
@@ -228,7 +272,16 @@ export default class Picker extends Component {
   };
 
   renderInner() {
-    const { optionGroups, valueGroups, itemHeight, height, onChange } = this.props;
+    const {
+      optionGroups,
+      valueGroups,
+      itemHeight,
+      height,
+      onChange,
+      textColor,
+      textFontFamily,
+      textSize
+    } = this.props;
     const highlightStyle = {
       height: itemHeight,
       marginTop: -(itemHeight / 2)
@@ -245,7 +298,11 @@ export default class Picker extends Component {
           value={valueGroups[name]}
           itemHeight={itemHeight}
           columnHeight={height}
-          onChange={onChange} />
+          onChange={onChange}
+          textColor={textColor}
+          textFontFamily={textFontFamily}
+          textSize={textSize}
+        />
       );
     }
     return (
