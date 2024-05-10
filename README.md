@@ -43,6 +43,9 @@ var Picker = require('react-mobile-picker-scroll');
 | onChange(name, value) | Function | N/A | Callback called when user pick a new value. |
 | itemHeight | Number | 36 | Height of each item (that is each option). In `px`. |
 | height | Number | 216 | Height of the picker. In `px`. |
+| textColor | String | N/A | Text color of the picker item |
+| textFontFamily | String | N/A | Font family of the picker item. |
+| textSize | Number | N/A | Text size of the picker item. In `px`. |
 
 ## Getting Started
 

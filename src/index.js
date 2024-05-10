@@ -10,7 +10,10 @@ class PickerColumn extends Component {
     itemHeight: PropTypes.number.isRequired,
     columnHeight: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
-    tabIndex: PropTypes.number.isRequired
+    tabIndex: PropTypes.number.isRequired,
+    textColor: PropTypes.string,
+    textFontFamily: PropTypes.string,
+    textSize: PropTypes.number
   };
 
   constructor(props) {
@@ -163,11 +166,14 @@ class PickerColumn extends Component {
   };
 
   renderItems() {
-    const { options, itemHeight, value } = this.props;
+    const { options, itemHeight, value, textColor, textFontFamily, textSize } = this.props;
     return options.map((option, index) => {
       const style = {
         height: itemHeight + 'px',
-        lineHeight: itemHeight + 'px'
+        lineHeight: itemHeight + 'px',
+        color: textColor,
+        fontFamily: textFontFamily,
+        fontSize: textSize + 'px'
       };
       const className = `picker-item${option === value ? ' picker-item-selected' : ''}`;
       return (
@@ -219,7 +225,10 @@ export default class Picker extends Component {
     valueGroups: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     itemHeight: PropTypes.number,
-    height: PropTypes.number
+    height: PropTypes.number,
+    textColor: PropTypes.string,
+    textFontFamily: PropTypes.string,
+    textSize: PropTypes.number
   };
 
   static defaultProps = {
@@ -228,7 +237,7 @@ export default class Picker extends Component {
   };
 
   renderInner() {
-    const { optionGroups, valueGroups, itemHeight, height, onChange } = this.props;
+    const { optionGroups, valueGroups, itemHeight, height, onChange, textColor, textFontFamily, textSize } = this.props;
     const highlightStyle = {
       height: itemHeight,
       marginTop: -(itemHeight / 2)
@@ -245,7 +254,11 @@ export default class Picker extends Component {
           value={valueGroups[name]}
           itemHeight={itemHeight}
           columnHeight={height}
-          onChange={onChange} />
+          onChange={onChange}
+          textColor={textColor}
+          textFontFamily={textFontFamily}
+          textSize={textSize}
+        />
       );
     }
     return (
