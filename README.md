@@ -10,9 +10,9 @@ React Mobile Picker is a super simple component with no restriction, which means
 
 ![qr](./examples/qr.png)
 
-Scan this Qr in you mobile.
+Scan this Qr with your mobile.
 
-Or visit (in mobile or mobile simulator): [http://adcentury.github.io/react-mobile-picker](http://adcentury.github.io/react-mobile-picker)
+Or visit (in mobile or mobile simulator): [https://adcentury.github.io/react-mobile-picker](https://adcentury.github.io/react-mobile-picker)
 
 ## Install
 
@@ -40,7 +40,7 @@ var Picker = require('react-mobile-picker-scroll');
 | ------------- | ---- | ------- | ----------- |
 | optionGroups | Object | N/A | Key-value pairs as `{name1: options1, name2: options2}`. `options` is an array of all options for this name. |
 | valueGroups | Object | N/A | Selected value pairs as `{name1: value1, name2: value2}`. |
-| onChange(name, value) | Function | N/A | Callback called when user pick a new value. |
+| onChange(name, value) | Function | N/A | Callback called when user picks a new value. |
 | itemHeight | Number | 36 | Height of each item (that is each option). In `px`. |
 | height | Number | 216 | Height of the picker. In `px`. |
 | textColor | String | N/A | Text color of the picker item |
@@ -95,6 +95,8 @@ class App extends Component {
     );
   }
 }
+
+export default App;
 ```
 
 ## More Examples
